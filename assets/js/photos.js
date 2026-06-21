@@ -26,9 +26,9 @@ window.LUMERA_PRODUCT_PHOTOS = {
   "terra-clad-100":      P + "window-timber.jpg",
   "aria-44":             P + "window-casement.jpg",
   "terra-copper-88":     P + "window-timber.jpg",
-  "aura-awning-150":     P + "window-casement.jpg",
+  "aura-awning-150":     P + "window-tilt-turn.jpg",
   "aria-outswing-111":   P + "window-casement.jpg",
-  "aria-42":             P + "window-tilt-turn.jpg",
+  "aria-42":             P + "window-lake.jpg",
   "vista-six-track-150": P + "window-sliding.jpg",
   "lumen-skylight":      P + "skylight.jpg",
   // Doors
