@@ -285,6 +285,21 @@ h3 { font-size: clamp(1.4rem, 2.5vw, 1.9rem); }
 }
 .hero__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 [data-photo].has-photo { background-size: cover; background-position: center; }
+/* all framed media fills its box + premium slow zoom on hover */
+.pcard__media img, .detail__media img, .split__media img { width: 100%; height: 100%; object-fit: cover; }
+.pcard__media img { transition: transform 0.9s var(--ease); }
+.pcard:hover .pcard__media img { transform: scale(1.05); }
+.detail__media img { transition: transform 1.2s var(--ease); }
+.detail__media:hover img { transform: scale(1.03); }
+/* collection page cinematic banner */
+.collection-hero { position: relative; padding-top: 150px; padding-bottom: clamp(3rem, 6vw, 5rem); color: var(--bone); overflow: hidden; background: var(--ink); }
+.collection-hero.has-photo { background-size: cover; background-position: center; }
+.collection-hero__overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,12,9,0.84) 0%, rgba(15,12,9,0.5) 55%, rgba(15,12,9,0.8) 100%); }
+.collection-hero__inner { position: relative; z-index: 1; }
+.collection-hero .eyebrow { color: var(--bronze-soft); }
+.collection-hero .eyebrow::before { background: var(--bronze-soft); }
+.collection-hero h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(2.2rem, 5vw, 3.6rem); margin-top: 1rem; max-width: 18ch; line-height: 1.06; }
+.collection-hero p { color: rgba(246,243,238,0.82); max-width: 56ch; margin-top: 1.1rem; }
 /* darken photo-backed category cards so the label stays readable */
 .cat-card__art.has-photo::after { background: linear-gradient(180deg, rgba(21,23,27,0) 28%, rgba(21,23,27,0.78) 100%); }
 .cat-card__art.has-photo .cat-card__lines { opacity: 0.18; }
