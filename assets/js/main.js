@@ -16,9 +16,11 @@
   var ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
   var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
-  /* media: prefer real photo, else bespoke SVG art */
+  /* media: prefer real photo (per-product, then explicit), else bespoke SVG art */
   function productMedia(p, label) {
-    if (p.image) return '<img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" loading="lazy">';
+    var map = window.LUMERA_PRODUCT_PHOTOS || {};
+    var src = p.image || map[p.id];
+    if (src) return '<img src="' + esc(src) + '" alt="' + esc(p.name) + '" loading="lazy" onerror="this.style.display=\'none\'">';
     return ART ? ART.product(p.type, label || p.type) : "";
   }
 
@@ -62,8 +64,24 @@
   /* ---------- year + hero/profile art injection ---------- */
   function initStatic() {
     $all("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+    var PHOTOS = window.LUMERA_PHOTOS;
+
+    // hero: real photo if available, else cinematic SVG
+    var heroSlot = $("[data-hero-art]");
+    if (heroSlot) {
+      if (PHOTOS && PHOTOS.hero) heroSlot.innerHTML = '<img class="hero__photo" src="' + PHOTOS.hero + '" alt="">';
+      else if (ART) heroSlot.innerHTML = ART.hero();
+    }
+
+    // photo-backed category cards & feature sections
+    $all("[data-photo]").forEach(function (el) {
+      var src = PHOTOS && PHOTOS[el.getAttribute("data-photo")];
+      if (src) { el.style.backgroundImage = "url('" + src + "')"; el.classList.add("has-photo"); }
+    });
+
+    // SVG fallbacks (only fire where photo hooks weren't used)
     if (ART) {
-      var heroSlot = $("[data-hero-art]"); if (heroSlot) heroSlot.innerHTML = ART.hero();
+      var hs = $("[data-hero-art]"); if (hs && !hs.innerHTML) hs.innerHTML = ART.hero();
       $all("[data-profile-art]").forEach(function (el) { el.innerHTML = ART.profile(); });
       $all("[data-cat-art]").forEach(function (el) { el.innerHTML = ART.category(el.getAttribute("data-cat-art")); });
       $all("[data-scene]").forEach(function (el) {
