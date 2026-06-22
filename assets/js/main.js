@@ -204,17 +204,25 @@
         '</div></section>'
       : "";
 
+    var cutGroup = p.cut
+      ? '<div class="panel__group"><h4>Frame profile</h4><div class="panel__cut"><img src="' + esc(p.cut) + '" alt="' + esc(p.name) + ' cross-section" loading="lazy"></div></div>'
+      : "";
+    var perfGroup = (p.performance && Object.keys(p.performance).length)
+      ? '<div class="panel__group"><h4>Performance</h4><dl>' + rows(p.performance) + '</dl></div>'
+      : "";
+
     // complete data sheet — every available field for this product
     var panel =
       '<aside class="detail__panel reveal">' +
         '<div class="panel__head">' +
           '<span class="eyebrow">Technical data</span>' +
           '<h2 class="panel__name">' + esc(p.name) + '</h2>' +
-          '<span class="panel__code">' + esc(p.code) + '</span>' +
+          '<span class="panel__code">Model ' + esc(p.code) + '</span>' +
         '</div>' +
+        cutGroup +
         '<div class="panel__group"><h4>Overview</h4><dl>' + overviewRows + '</dl></div>' +
         '<div class="panel__group"><h4>Specifications</h4><dl>' + rows(p.specs) + '</dl></div>' +
-        '<div class="panel__group"><h4>Performance</h4><dl>' + rows(p.performance) + '</dl></div>' +
+        perfGroup +
         (chips ? '<div class="panel__group"><h4>Opening methods</h4><div class="chips">' + chips + '</div></div>' : "") +
         '<div class="panel__cta"><a class="btn btn--bronze" href="contact.html?product=' + encodeURIComponent(p.code) + '">Request a quote ' + ARROW + '</a></div>' +
         '<p class="form__note" style="margin-top:1rem">Figures are nominal and depend on configuration, glazing and installation. Custom sizes, finishes, colours and glass build-ups available on request.</p>' +
