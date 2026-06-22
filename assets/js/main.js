@@ -178,27 +178,17 @@
     }
     document.title = p.name + " — LUMERA";
 
-    var specRows = Object.keys(p.specs).map(function (k) {
-      return '<div class="spectable__row"><dt>' + esc(k) + '</dt><dd>' + esc(p.specs[k]) + '</dd></div>';
-    }).join("");
+    function rows(obj) {
+      return Object.keys(obj).map(function (k) {
+        return '<div class="panel__row"><dt>' + esc(k) + '</dt><dd>' + esc(obj[k]) + '</dd></div>';
+      }).join("");
+    }
 
-    var perfIcons = {
-      "Air leakage": '<path d="M4 8h11a3 3 0 1 0-3-3"/><path d="M4 14h15a3 3 0 1 1-3 3"/><path d="M4 11h9"/>',
-      "Sound (STC)": '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M16 8a5 5 0 0 1 0 8"/>',
-      "Structural test pressure": '<path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/>',
-      "Water penetration": '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>',
-      "U-factor": '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>'
-    };
-    var perfCells = Object.keys(p.performance).map(function (k) {
-      var ic = perfIcons[k] || perfIcons["U-factor"];
-      return (
-        '<div class="perf-cell">' +
-          '<svg class="perf-cell__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + ic + '</svg>' +
-          '<div class="perf-cell__val">' + esc(p.performance[k]) + '</div>' +
-          '<div class="perf-cell__label">' + esc(k) + '</div>' +
-        '</div>'
-      );
-    }).join("");
+    var overviewRows =
+      '<div class="panel__row"><dt>Collection</dt><dd>' + esc(p.series) + '</dd></div>' +
+      '<div class="panel__row"><dt>Category</dt><dd>' + esc(catLabel(p.category)) + '</dd></div>' +
+      '<div class="panel__row"><dt>System type</dt><dd>' + esc(p.type) + '</dd></div>' +
+      '<div class="panel__row"><dt>Model code</dt><dd>' + esc(p.code) + '</dd></div>';
 
     var highlights = p.highlights.map(function (h) {
       return '<li>' + CHECK + '<span>' + esc(h) + '</span></li>';
@@ -214,32 +204,43 @@
         '</div></section>'
       : "";
 
+    // complete data sheet — every available field for this product
+    var panel =
+      '<aside class="detail__panel reveal">' +
+        '<div class="panel__head">' +
+          '<span class="eyebrow">Technical data</span>' +
+          '<h2 class="panel__name">' + esc(p.name) + '</h2>' +
+          '<span class="panel__code">' + esc(p.code) + '</span>' +
+        '</div>' +
+        '<div class="panel__group"><h4>Overview</h4><dl>' + overviewRows + '</dl></div>' +
+        '<div class="panel__group"><h4>Specifications</h4><dl>' + rows(p.specs) + '</dl></div>' +
+        '<div class="panel__group"><h4>Performance</h4><dl>' + rows(p.performance) + '</dl></div>' +
+        (chips ? '<div class="panel__group"><h4>Opening methods</h4><div class="chips">' + chips + '</div></div>' : "") +
+        '<div class="panel__cta"><a class="btn btn--bronze" href="contact.html?product=' + encodeURIComponent(p.code) + '">Request a quote ' + ARROW + '</a></div>' +
+        '<p class="form__note" style="margin-top:1rem">Figures are nominal and depend on configuration, glazing and installation. Custom sizes, finishes, colours and glass build-ups available on request.</p>' +
+      '</aside>';
+
     root.innerHTML =
       '<section class="detail"><div class="container">' +
         '<nav class="crumbs reveal"><a href="index.html">Home</a><span>/</span>' +
           '<a href="products.html?category=' + p.category + '">' + esc(catLabel(p.category)) + '</a><span>/</span>' +
           '<a aria-current="page">' + esc(p.code) + '</a></nav>' +
-        '<div class="detail__top">' +
-          '<div class="detail__media reveal">' + productMedia(p, p.code) + '</div>' +
-          '<div class="detail__info reveal">' +
-            '<div class="detail__series">' + esc(p.series) + ' Series · ' + esc(p.code) + '</div>' +
-            '<h1>' + esc(p.name.replace(p.code + " ", "")) + '</h1>' +
-            '<p class="detail__tagline">' + esc(p.tagline) + '</p>' +
-            '<p class="detail__summary">' + esc(p.summary) + '</p>' +
-            '<ul class="detail__highlights">' + highlights + '</ul>' +
-            '<div class="detail__actions">' +
-              '<a class="btn btn--bronze" href="contact.html?product=' + encodeURIComponent(p.code) + '">Request a quote ' + ARROW + '</a>' +
-              '<a class="btn btn--ghost" href="products.html?category=' + p.category + '">Browse ' + esc(catLabel(p.category)) + '</a>' +
+        '<div class="detail__layout">' +
+          '<div class="detail__main">' +
+            '<div class="detail__media reveal">' + productMedia(p, p.code) + '</div>' +
+            '<div class="detail__body reveal">' +
+              '<div class="detail__series">' + esc(p.series) + ' · ' + esc(p.code) + '</div>' +
+              '<h1>' + esc(p.name) + '</h1>' +
+              '<p class="detail__tagline">' + esc(p.tagline) + '</p>' +
+              '<p class="detail__summary">' + esc(p.summary) + '</p>' +
+              '<ul class="detail__highlights">' + highlights + '</ul>' +
+              '<div class="detail__actions">' +
+                '<a class="btn btn--bronze" href="contact.html?product=' + encodeURIComponent(p.code) + '">Request a quote ' + ARROW + '</a>' +
+                '<a class="btn btn--ghost" href="products.html?category=' + p.category + '">Browse ' + esc(catLabel(p.category)) + '</a>' +
+              '</div>' +
             '</div>' +
           '</div>' +
-        '</div>' +
-        '<div class="detail__cols">' +
-          '<div class="reveal"><span class="eyebrow">Specifications</span><dl class="spectable">' + specRows + '</dl>' +
-            (chips ? '<h4 class="mt-4">Opening methods</h4><div class="chips">' + chips + '</div>' : "") +
-          '</div>' +
-          '<div class="reveal"><span class="eyebrow">Performance</span><div class="perf-grid">' + perfCells + '</div>' +
-            '<p class="form__note mt-4">Performance figures are nominal and depend on configuration, glazing and installation. Custom sizes, finishes and glass build-ups available on request.</p>' +
-          '</div>' +
+          panel +
         '</div>' +
       '</div></section>' +
       relatedHTML;
